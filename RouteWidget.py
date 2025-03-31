@@ -64,9 +64,8 @@ class RouteEditorWidget(QtWidgets.QWidget):
 
         QtCore.QObject.blockSignals(self.fileSelector, True)
 
-        # Add elements to file selector drop-down
         for file in self.archiveContents:
-            self.fileSelector.addItem(str(file.name)[5:-4])
+            self.fileSelector.addItem(file.name[5:-4])
 
         QtCore.QObject.blockSignals(self.fileSelector, False)
 

@@ -1,7 +1,7 @@
 import PointWidget
 import RouteWidget
-import BossPathWidget
-import SarcLib
+
+from u8 import Arc
 import sys
 from PyQt5 import QtCore, QtWidgets, QtGui
 
@@ -46,8 +46,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveAsFile.setStatusTip('Save As')
         self.closeFile.setStatusTip('Close the current file')
 
-        self.openFile.triggered.connect(self.loadSarc)
-        self.saveFile.triggered.connect(self.saveSarc)
+        self.openFile.triggered.connect(self.loadArc)
+        self.saveFile.triggered.connect(self.saveArc)
         self.saveAsFile.triggered.connect(self.saveSarcAs)
         self.closeFile.triggered.connect(self.closeSarc)
 
@@ -69,55 +69,58 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.editor)
 
-    def loadSarc(self):
-        fileName = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '', 'SARC files (*.sarc)')[0]
+    def loadArc(self):
+        fileName = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '', 'ARC files (*.arc)')[0]
 
         if fileName == '':
             return
 
         self.currentFilePath = fileName
+        archive = Arc.from_file(fileName)
 
-        with open(fileName, 'rb') as fileObj:
-            data = fileObj.read()
-
-        archive = SarcLib.SARC_Archive(data)
-        archive.load(data)
-
-        self.editor.loadData(archive.contents)
+        self.editor.loadData(archive)
 
         self.saveFile.setDisabled(False)
         self.saveAsFile.setDisabled(False)
         self.closeFile.setDisabled(False)
         self.editor.setDisabled(False)
 
-    def saveSarc(self):
+    def saveArc(self):
         arcContents = self.editor.getDataFromWidgets()
-        newArchive = SarcLib.SARC_Archive(endianness='<')
+        arcContents.sort(key=lambda __f: __f.name)
+
+        newArchive = Arc()
 
         for file in arcContents:
-            newArchive.addFile(file)
+            folder_name = file.name[5:-4]
+            if len(folder_name) > 2:
+                folder_name = folder_name[:2]
 
-        outFile = newArchive.save()[0]
+            newArchive.append_file(file.name, file.data, path=folder_name + '/' + file.name)
 
         with open(self.currentFilePath, 'wb+') as f:
-            f.write(outFile)
+            f.write(newArchive.to_bytes())
 
     def saveSarcAs(self):
         arcContents = self.editor.getDataFromWidgets()
-        newArchive = SarcLib.SARC_Archive(endianness='<')
+        arcContents.sort(key=lambda __f: __f.name)
+
+        newArchive = Arc()
 
         for file in arcContents:
-            newArchive.addFile(file)
+            folder_name = file.name[5:-4]
+            if len(folder_name) > 2:
+                folder_name = folder_name[:2]
 
-        outFile = newArchive.save()[0]
+            newArchive.append_file(file.name, file.data, path=folder_name + '/' + file.name)
 
-        fileName = QtWidgets.QFileDialog.getSaveFileName(self, 'Save file', '', 'SARC files (*.sarc)')[0]
+        fileName = QtWidgets.QFileDialog.getSaveFileName(self, 'Save file', '', 'ARC files (*.arc)')[0]
 
         if fileName == '':
             return
 
         with open(fileName, 'wb+') as f:
-            f.write(outFile)
+            f.write(newArchive.to_bytes())
 
     def closeSarc(self):
         closeDialog = QtWidgets.QMessageBox
@@ -139,44 +142,39 @@ class EditorTabWidget(QtWidgets.QTabWidget):
 
         self.pointEditor = PointWidget.PointEditorWidget()
         self.routeEditor = RouteWidget.RouteEditorWidget()
-        self.bossPathEditor = BossPathWidget.BossPathEditorWidget()
         self.addTab(self.pointEditor, 'Node Unlocks')
         self.addTab(self.routeEditor, 'Path Settings')
-        self.addTab(self.bossPathEditor, 'Boss Path')
 
     def loadData(self, archiveContents):
         self.closeFile()
 
         pointFiles = []
         routeFiles = []
-        bossPathFiles = []
 
-        for file in archiveContents:
-            if not str(file.name).find('point'):
-                pointFiles.append(file)
-            elif not str(file.name).find('route'):
-                routeFiles.append(file)
-            elif not str(file.name).find('worldIn') or not str(file.name).find('toCastle'):
-                bossPathFiles.append(file)
+        # Keep the order. We load them in lazily, so we do not
+        # preserve the original order of the u8 archive.
+        files = sorted(list(archiveContents.get_all_files().values()), key=lambda __f: __f.name)
+        for f in files:
+            if f.name.startswith('point'):
+                pointFiles.append(f)
+            elif f.name.startswith('route'):
+                routeFiles.append(f)
             else:
                 print('Unknown File')
-                print(file.name)
+                print(f)
 
         self.pointEditor.loadData(pointFiles)
         self.routeEditor.loadData(routeFiles)
-        self.bossPathEditor.loadData(bossPathFiles)
 
     def closeFile(self):
         self.pointEditor.closeData()
         self.routeEditor.closeData()
-        self.bossPathEditor.closeData()
 
     def getDataFromWidgets(self):
         pointFiles = self.pointEditor.getArchiveContents()
         routeFiles = self.routeEditor.getArchiveContents()
-        bossPathFiles = self.bossPathEditor.getArchiveContents()
 
-        archiveContents = pointFiles + routeFiles + bossPathFiles
+        archiveContents = pointFiles + routeFiles
 
         return archiveContents
 
