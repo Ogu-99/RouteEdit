@@ -96,7 +96,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if len(folder_name) > 2:
                 folder_name = folder_name[:2]
 
-            newArchive.append_file(file.name, file.data, path=folder_name + '/' + file.name)
+            newArchive.append_file(file.name, file.data, path=folder_name)
 
         with open(self.currentFilePath, 'wb+') as f:
             f.write(newArchive.to_bytes())

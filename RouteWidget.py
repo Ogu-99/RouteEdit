@@ -178,7 +178,7 @@ class RouteEntryTable(QtWidgets.QTableWidget):
         QtWidgets.QTableWidget.__init__(self)
 
         # Setup Table Properties
-        self.setColumnCount(3)
+        self.setColumnCount(2)
         self.setAlternatingRowColors(True)
         self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
 

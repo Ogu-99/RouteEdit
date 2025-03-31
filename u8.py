@@ -545,7 +545,7 @@ class Arc:
         return current_dict
 
     def _append_internal(self, filename: str, file: ArcFile, *, path: list[str] | str | None = None) -> None:
-        target_dir = self._get_or_create_directory(str(Path(path).parent))
+        target_dir = self._get_or_create_directory(path)
         if filename in target_dir:
             raise KeyError(
                 f"A file or directory named '{filename}' already exists in the specified path."

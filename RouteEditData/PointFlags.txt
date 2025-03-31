@@ -1,0 +1,20 @@
+ura:Used on some levels with secret exits in NSMBW
+stop:Forces the player to stop on the point regardless of how many routes are connected to it
+linkX:Links two subworlds together. The value of X can range from 1 to 5
+scroll:Allows free scrolling on all axis until another point with this flag is touched
+scale:Shrinks the player to a size of 0. Used for the secret entrance in NSMBW 7-Castle
+dokan:The end points of two connected pipes. Triggers an animation upon stepping on the route that ends with a point with this flag
+switch:Used for the switches in the second half of World 3
+crossroad:Stops the player if three or more routes connected to this point are unlocked
+focus:Forces the camera to focus on the player's movement rather than staying on its own tacking path
+anchor:Unused
+tilt:Gradually tilts the camera downwards. Used on the last point before NSMBW 8-Castle
+demo:A series of points defining the escape route of a Koopaling once the tower level of a world is cleared. The value can range from 1 to 7
+camstop:Stops the camera movement until another point with this flag is touched
+noshift:Prevents the camera from shifting when the player turns in a different direction
+board:Places a star board in the upwards direction of the player
+demostop:Stops the player from moving further forwards after the automatic cutscene revealing Bowser's Castle after beating NSMBW 8-Airship
+scrollY:Allows scrolling on the Y axis exclusively
+sand:Replaces the white landing particles from a jump with sand particles. The landing sound is unaffected from this
+ice:Unused. Presumably does the same thing as the "sand" flag but with ice particles
+scrollA:Enables scrolling on the X axis exclusively

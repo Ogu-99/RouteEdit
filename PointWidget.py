@@ -8,6 +8,18 @@ class PointEditorWidget(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
 
+        self.point_flags = {}
+        with open('RouteEditData/PointFlags.txt', 'rt') as f:
+            for line in f:
+                (name, desc) = line.split(':')
+                self.point_flags[name] = desc
+
+        self.ambush_flags = {}
+        with open('RouteEditData/AmbushFlags.txt', 'rt') as f:
+            for line in f:
+                (name, desc) = line.split(':')
+                self.point_flags[name] = desc
+
         self.archiveContents = []
         self.fileLoaded = False
         self.currentLoadedFile = ''
@@ -17,7 +29,7 @@ class PointEditorWidget(QtWidgets.QWidget):
         # Create Widgets
         self.fileSelector = QtWidgets.QComboBox()
         self.scrollArea = QtWidgets.QScrollArea()
-        self.pointEntries = PointEntryTable()
+        self.pointEntries = PointEntryTable(self.point_flags, self.ambush_flags)
         self.addRowButton = QtWidgets.QPushButton('Insert Row')
         self.delRowButton = QtWidgets.QPushButton('Remove Row')
         self.importButton = QtWidgets.QPushButton('Import')
@@ -175,8 +187,11 @@ class PointEditorWidget(QtWidgets.QWidget):
 
 
 class PointEntryTable(QtWidgets.QTableWidget):
-    def __init__(self):
+    def __init__(self, point_flags, ambush_flags):
         QtWidgets.QTableWidget.__init__(self)
+
+        self.point_flags = point_flags
+        self.ambush_flags = ambush_flags
 
         # Setup Table Properties
         self.setColumnCount(9)
