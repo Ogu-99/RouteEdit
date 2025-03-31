@@ -3,7 +3,6 @@
 
 ### Requirements
 * Python3
-* SarcLib `pip install sarclib`
 * PyQt5 `pip install pyqt5`
 ### Usage
 * Run RouteEdit.py
