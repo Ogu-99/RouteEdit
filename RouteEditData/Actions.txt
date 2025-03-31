@@ -1,2 +1,16 @@
-﻿走る:Walk
-ジャンプ:Jump
+﻿ジャンプ:Jump
+道:Standard walk, which uses a grass-like sounds.
+砂:Standard walk, but with sand particles and sand sounds.
+流砂:Standard walk, but with "quicksand" particles, which are slightly brighter than regular sand.
+雪:Standard walk, but with snow particles and sounds.
+氷:Standard walk, but with icy particles and sounds.
+木:Standard walk, but with wood sounds. This is used for World 4's piers.
+土:Standard walk, but with dirt particles. This is used for World 5's Ambush dirt paths.
+坂:Sliding animation when going down, and snowy walk otherwise. Used in World 3.
+氷坂:Snowy slope, but produces ice effects/sounds.
+はしご:Metal ladder facing up/away from the camera, used in World 5.
+はしご岩:Rock ladder facing up/away from the camera, used in World 6.
+はしご縄:Rope ladder facing up/away from the camera, used in World 2.
+はしご左:Standard ladder facing left, used in World 5.
+はしご右:Standard ladder facing right, used in World 5.
+ツタ:Beanstalk climbing animation, used in World 7.

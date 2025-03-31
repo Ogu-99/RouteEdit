@@ -188,7 +188,6 @@ class RouteEntryTable(QtWidgets.QTableWidget):
         header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.setHorizontalHeaderItem(0, QtWidgets.QTableWidgetItem('Path'))
         self.setHorizontalHeaderItem(1, QtWidgets.QTableWidgetItem('Action'))
-        self.setHorizontalHeaderItem(2, QtWidgets.QTableWidgetItem('Sound'))
 
         # Hide Row Numbers
         self.verticalHeader().setVisible(False)
@@ -203,7 +202,6 @@ class RouteEntryTable(QtWidgets.QTableWidget):
             # Populate the new row with the contents of that entry in the array
             self.setItem(pos, 0, QtWidgets.QTableWidgetItem(dataArray[i][0]))  # Path
             self.setCellWidget(pos, 1, ActionEditor(dataArray[i][1]))          # Action
-            self.setCellWidget(pos, 2, SoundEffectsEditor(dataArray[i][2]))    # Sound
             i += 1
 
     def addRow(self):
@@ -212,7 +210,6 @@ class RouteEntryTable(QtWidgets.QTableWidget):
         # Initialise the row
         self.setItem(self.currentRow()+1, 0, QtWidgets.QTableWidgetItem())  # Path
         self.setCellWidget(self.currentRow()+1, 1, ActionEditor())          # Action
-        self.setCellWidget(self.currentRow()+1, 2, SoundEffectsEditor())    # Sound
 
     def delRow(self):
         self.removeRow(self.currentRow())
@@ -226,7 +223,7 @@ class RouteEntryTable(QtWidgets.QTableWidget):
             col = 0
             rowData = []
             # Iterate through each column for the current row
-            while col < 3:
+            while col < 2:
                 # Store the contents of the column
                 if col == 0:
                     rowData.append(self.item(row, col).text())
@@ -235,45 +232,15 @@ class RouteEntryTable(QtWidgets.QTableWidget):
                 col += 1
             # Store the contents of each row
             rowString = ','.join(rowData)
-            outData.append(rowString)
+            outData.append(rowString + ',')
             row += 1
 
         outString = '\r\n'.join(outData)
-        return outString
+        return outString + '\r\n'
 
     def clearTable(self):
         while self.rowCount() > 0:
             self.removeRow(0)
-
-
-class SoundEffectsEditor(QtWidgets.QComboBox):
-    def __init__(self, data=None, parent=None):
-        QtWidgets.QWidget.__init__(self, parent=parent)
-
-        # Create a dictionary to translate the sfx names from jp to english
-        self.sfx = {}
-        with open('RouteEditData/SoundEffects.txt', 'rt', encoding='utf-8-sig') as f:
-            for line in f:
-                (jp, eng) = line.split(':')
-                eng = str(eng).strip('\n')
-                self.sfx[jp] = eng
-
-        # Add translated sound effect names to the combobox
-        for jp, eng in self.sfx.items():
-            self.addItem(eng)
-
-        if data is not None:
-            self.getIndexByName(data)
-
-    def getIndexByName(self, data):
-        for jp, eng in self.sfx.items():
-            if not str(data).find(jp):
-                self.setCurrentIndex(self.findText(eng))
-
-    def getValue(self):
-        for jp, eng in self.sfx.items():
-            if not self.currentText().find(eng):
-                return jp
 
 
 class ActionEditor(QtWidgets.QComboBox):

@@ -255,7 +255,7 @@ class PointEntryTable(QtWidgets.QTableWidget):
             row += 1
 
         outString = '\r\n'.join(outData)
-        return outString
+        return outString + '\r\n'
 
     def clearTable(self):
         while self.rowCount() > 0:
