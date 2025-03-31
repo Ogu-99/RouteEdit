@@ -332,7 +332,7 @@ class Arc:
         import struct
 
         # ---------------------------------------------
-        # STEP 1. BUILD FST ENTRIES (PRE-ORDER TRAVERSAL)
+        # STEP 1. BUILD FST ENTRIES
         # ---------------------------------------------
         fst_entries: list[_FST_ENTRY_] = []
         names: list[str] = []
@@ -403,16 +403,10 @@ class Arc:
         # ---------------------------------------------
         # STEP 3. CALCULATE OFFSETS
         # ---------------------------------------------
-        # Official approach:
-        #  * FST starts at offset 0x20 (immediately after header).
-        #  * FST is NOT padded to 32 bytes.
-        #  * The string table is directly after FST (alignment by 32 bytes).
-        #  * The file data region is aligned to 32 bytes, immediately after the string table.
         fst_offset = 0x20
         fst_size = len(fst_entries) * 12
         str_table_offset = fst_offset + fst_size
         str_table_size = len(string_table)
-        # File data offset is 32-byte aligned after string table
         file_data_offset = _align(str_table_offset + str_table_size, 0x20)
 
         # ---------------------------------------------
@@ -431,9 +425,7 @@ class Arc:
         # ---------------------------------------------
         buffer = io.BytesIO()
 
-        # Write 0x20-byte header
-        # Format: magic, offsetToFST, fstSize, fileDataOffset, 16 reserved
-        # Magic "U\xAA8-" => 0x55 0xAA 0x38 0x2D
+        # Write header
         buffer.write(struct.pack(
             '>4sIII16s',
             U8_FILE_MAGIC.encode('latin-1'),  # magic
