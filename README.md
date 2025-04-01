@@ -10,7 +10,7 @@ Credits go to Explos for the original program and me
 for modifying it.
 
 See https://horizon.miraheze.org/wiki/Editing_the_Original_Maps
-for a thorough documentation of the NSMWBWii retail world map system.
+for a thorough documentation of the NSMBWii retail world map system.
 
 ### Requirements
 * Python3
